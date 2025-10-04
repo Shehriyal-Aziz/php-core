@@ -1,4 +1,4 @@
-<?php 
+<?php
 ob_start();
 session_start();
 include 'includes/header.php'; ?>
@@ -14,27 +14,27 @@ include 'includes/header.php'; ?>
 
 
         <?php
-        
+
         include "connect.php";
 
         if (isset($_POST['loginbtn'])) {
-            $login = mysqli_real_escape_string($connection, $_POST['login']);
-            $password = mysqli_real_escape_string($connection, $_POST['password']);
-
-
-            $q = mysqli_query($connection, "
-        SELECT * FROM `users` 
-        WHERE (email = '$login' OR u_name = '$login') 
-          AND u_password = '$password'
-    ");
-
-            if (mysqli_num_rows($q) > 0) {
-                $_SESSION['user'] = $login;
-                header("Location: admin/index.php");
-                exit;
+            $login = $_POST['login'];
+            $password = $_POST['password'];
+            $q = mysqli_query($connection, "SELECT * FROM `users` WHERE (email = '$login' OR u_name = '$login') AND u_password = '$password'");
+            $check = mysqli_fetch_array($q);
+            if ($check) {
+                if ($check['role'] == 'admin') {
+                    $_SESSION['admin'] = $login;
+                    header("Location: admin/index.php");
+                    exit;
+                } else if ($check['role'] == 'user') {
+                    $_SESSION['user'] = $login;
+                    header("Location: index.php");
+                    exit;
+                }
             } else {
                 echo "<div class='mt-6 p-4 bg-red-500/20 border border-red-500/30 rounded-lg text-red-400 text-center'>
-                Error: Email/Username or password is incorrect.
+                Error: Email/Username or password is incorrect or you are not registered.
               </div>";
             }
         }

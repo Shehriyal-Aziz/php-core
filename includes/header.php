@@ -46,7 +46,7 @@
 
       <!-- Desktop Menu -->
       <ul class="hidden lg:flex items-center space-x-8">
-        <li><a href="#" class="text-gray-300 hover:text-white transition-colors">Features</a></li>
+        <li><a href="/php-core/index.php" class="text-gray-300 hover:text-white transition-colors">Home</a></li>
         <li><a href="/php-core/feedback.php" class="text-gray-300 hover:text-white transition-colors">Feedback</a></li>
         <li><a href="/php-core/contact.php" class="text-gray-300 hover:text-white transition-colors">Contact</a></li>
         <li><a href="#" class="text-gray-300 hover:text-white transition-colors">Pricing</a></li>
@@ -56,8 +56,10 @@
       <!-- Desktop Buttons -->
       <div class="hidden lg:flex items-center space-x-4">
         <a href="/php-core/login.php" class="text-gray-300 hover:text-white transition-colors">Login</a>
-        <a href="/php-core/register.php" class="text-gray-300 hover:text-white transition-colors">Register</a>
-        <a href="/php-core/admin/index.php" class="bg-crypto-purple hover:bg-crypto-dark-purple text-white px-4 py-2 rounded-lg">Admin</a>
+        <a href="/php-core/admin/index.php"
+          class=" hover:text-purple-500 p-2 rounded-lg flex items-center justify-center">
+          <i data-lucide="User" class="w-5 h-5"></i>
+        </a>
       </div>
 
       <!-- Mobile Menu Button -->
