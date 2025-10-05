@@ -26,8 +26,8 @@ include '../session.php';
     <a href="/php-core/admin/contact_report.php" class="flex items-center px-4 py-2 text-gray-300 hover:bg-[#1A1D29] hover:text-white rounded-lg">
       ✉️ <span class="ml-3">Contact</span>
     </a>
-    <a href="#" class="flex items-center px-4 py-2 text-gray-300 hover:bg-[#1A1D29] hover:text-white rounded-lg">
-      ⚙️ <span class="ml-3">Settings</span>
+    <a href="/php-core/admin/viewupload.php" class="flex items-center px-4 py-2 text-gray-300 hover:bg-[#1A1D29] hover:text-white rounded-lg">
+        📁 <span class="ml-3">Uploads</span>
     </a>
   </nav>
 
