@@ -49,7 +49,7 @@
         <li><a href="/php-core/index.php" class="text-gray-300 hover:text-white transition-colors">Home</a></li>
         <li><a href="/php-core/feedback.php" class="text-gray-300 hover:text-white transition-colors">Feedback</a></li>
         <li><a href="/php-core/contact.php" class="text-gray-300 hover:text-white transition-colors">Contact</a></li>
-        <li><a href="#" class="text-gray-300 hover:text-white transition-colors">Pricing</a></li>
+        <li><a href="/php-core/upload.php" class="text-gray-300 hover:text-white transition-colors">Upload</a></li>
         <li><a href="#" class="text-gray-300 hover:text-white transition-colors">FAQ</a></li>
       </ul>
 
@@ -75,7 +75,7 @@
           <li><a href="#" class="text-gray-300 hover:text-white transition-colors block py-2">Features</a></li>
           <li><a href="/php-core/feedback.php" class="text-gray-300 hover:text-white transition-colors block py-2">Feedback</a></li>
           <li><a href="/php-core/contact.php" class="text-gray-300 hover:text-white transition-colors block py-2">Contact</a></li>
-          <li><a href="#" class="text-gray-300 hover:text-white transition-colors block py-2">Pricing</a></li>
+          <li><a href="/php-core/upload.php" class="text-gray-300 hover:text-white transition-colors block py-2">Upload</a></li>
           <li><a href="#" class="text-gray-300 hover:text-white transition-colors block py-2">FAQ</a></li>
           <li class="pt-4 flex flex-col space-y-3">
             <a href="/php-core/login.php" class="text-gray-300 hover:text-white transition-colors block">Login</a>
