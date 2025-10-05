@@ -27,7 +27,7 @@
                     <tr class="hover:bg-[#1F2230] transition-colors">
                         <td class="px-6 py-4 text-gray-200"><?php echo $main['f_name'] ?></td>
                         <td class="px-6 py-4 text-gray-200"><?php echo $main['u_name'] ?></td>
-                        <td class="px-6 py-4 text-gray-200"><?php echo $main['role'] ?></td>
+                        <td class="px-6 py-4 text-gray-200"><?php echo $main['role'] ?></td>    
                         <td class="px-6 py-4 text-center">
                             <div class="inline-flex space-x-2">
                                 <form method="post">

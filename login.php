@@ -42,7 +42,7 @@ include 'includes/header.php'; ?>
 
 
         <!-- Login Form -->
-        <form method="post" class="space-y-5">
+        <form method="post"  autocomplete="off" class="space-y-5">
             <!-- Email -->
             <div>
                 <label for="email" class="block text-sm text-gray-300 mb-2">Email Address or UserName</label>
@@ -50,6 +50,7 @@ include 'includes/header.php'; ?>
                     type="text"
                     id="email"
                     name="login"
+                    autocomplete="off"
                     required
                     class="w-full px-4 py-3 rounded-lg bg-[#0B0D17] border border-gray-700 focus:outline-none focus:ring-2 focus:ring-crypto-purple text-white"
                     placeholder="you@example.com">
@@ -62,6 +63,7 @@ include 'includes/header.php'; ?>
                     type="password"
                     id="password"
                     name="password"
+                    autocomplete="off"
                     required
                     class="w-full px-4 py-3 rounded-lg bg-[#0B0D17] border border-gray-700 focus:outline-none focus:ring-2 focus:ring-crypto-purple text-white"
                     placeholder="********">
