@@ -34,7 +34,7 @@
 
     <!-- Modal Background -->
     <!-- Modal -->
-    <div style="display:none" id="productModal"
+    <div id="productModal"
         class="fixed inset-0 hidden bg-black/60 flex items-center justify-center z-50 overflow-y-auto">
         <div class="bg-[#12141C] text-white rounded-xl w-full max-w-lg mx-4 my-10 p-8 relative overflow-y-auto max-h-[90vh]">
 
