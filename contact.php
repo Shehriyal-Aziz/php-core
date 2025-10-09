@@ -41,7 +41,7 @@
             ?>
 
     <!-- Contact Form -->
-    <form action="contact.php" method="POST" class="space-y-5">
+    <form  method="POST" class="space-y-5">
       
       <!-- Name -->
       <div>
@@ -104,7 +104,7 @@
       </button>
     </form>
 
-    <!-- Success / Error Messages -->
+  
     <?php
       if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $name = htmlspecialchars($_POST['name']);
@@ -117,7 +117,7 @@
                 Thank you, <b>$name</b>! Your message has been received.
               </div>";
       }
-    ?>
+    ?> 
 
   </div>
 </section>

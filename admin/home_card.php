@@ -19,20 +19,106 @@
                 + Add Product
             </button>
 
-<hr class="m-2 mt-20">
+
+
+            <hr class="m-2 mt-20">
+
             <!-- part 2 -->
             <h1 class="text-3xl font-bold my-2">Added Product</h1>
             <p class="text-gray-400 mb-8"> All Cards you have added till now display blow</p>
 
+            <!-- Users Table -->
+            <div class="bg-[#12141C] rounded-xl shadow-lg border border-white/10 overflow-hidden">
+                <table class="min-w-full table-auto">
+                    <thead class="bg-[#1A1C23]">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-300">Name</th>
+                            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-300">Desc</th>
+                            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-300">Price</th>
+                            <th class="px-6 py-3 text-center text-sm font-semibold text-gray-300">Operations</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-800">
+                        <!-- delete -->
+                        <?php
+                        if (isset($_POST['btndelete'])) {
+                            $id = $_POST['id'];
+                            $delete = mysqli_query($connection, 'delete from home_card where h_id =' . $id);
+                        }
+                        ?>
+
+                        <!-- loop  -->
+                        <?php
+                        $store = mysqli_query($connection, "select * from home_card");
+                        while ($main = mysqli_fetch_array($store)) {
+                        ?>
+                            <tr class="hover:bg-[#1F2230] transition-colors">
+                                <td class="px-6 py-4 text-gray-200"><?php echo $main['h_name'] ?></td>
+                                <td class="px-6 py-4 text-gray-200"><?php echo $main['h_desc'] ?></td>
+                                <td class="px-6 py-4 text-gray-200"><?php echo $main['h_price'] ?></td>
+                                <td class="px-6 py-4 text-center">
+                                    <div class="inline-flex space-x-2">
 
 
 
 
+                                        <form method="post">
+                                            <input type="hidden" name="id" value="<?php echo $main['h_id'] ?>">
+                                            <button type="submit" name="btndelete" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-lg text-sm">
+                                                Delete
+                                            </button>
+                                        </form>
+
+
+                                    </div>
+                                </td>
+                            </tr>
+                        <?php } ?>
+                    </tbody>
+                </table>
+            </div>
         </div>
-        <?php include '../includes/footer.php'; ?>
+
+
+
+
+
+    </div>
+    <?php include '../includes/footer.php'; ?>
     </div>
 
-    <!-- Modal Background -->
+    <!-- Modal php -->
+
+    <?php
+    if (isset($_POST['hsubmit'])) {
+        $name = $_POST['hname'];
+        $desc = $_POST['hdesc'];
+        $price = $_POST['hprice'];
+
+        $imgName = $_FILES['himg']['name'];
+        $imgTmp = $_FILES['himg']['tmp_name'];
+        $folder = "../home_card/" . $imgName;
+
+        if (!empty($imgName) && !empty($name) && !empty($price)) {
+            if (move_uploaded_file($imgTmp, $folder)) {
+                $query = "INSERT INTO `home_card`(`h_img`, `h_name`, `h_desc`, `h_price`) 
+                      VALUES ('$imgName', '$name', '$desc', '$price')";
+                $q = mysqli_query($connection, $query);
+
+                if ($q) {
+                    echo "<script>window.location.href = 'home_card.php';</script>";
+                } else {
+                    echo "<script>alert('Database insert fail')</script>";
+                }
+            } else {
+                echo "<script>alert('Image upload failed!');</script>";
+            }
+        } else {
+            echo "<script>alert('Please fill all fields.');</script>";
+        }
+    }
+    ?>
+
     <!-- Modal -->
     <div id="productModal"
         class="fixed inset-0 hidden bg-black/60 flex items-center justify-center z-50 overflow-y-auto">
@@ -47,49 +133,50 @@
             <h2 class="text-2xl font-bold mb-6 text-center">Add Product</h2>
 
             <!-- Form -->
-            <form action="contact.php" method="POST" class="space-y-5">
+            <form method="POST" enctype="multipart/form-data" class="space-y-5">
 
-                <!-- Name -->
+                <!-- product image -->
                 <div>
-                    <label for="name" class="block text-sm text-gray-300 mb-2">Your Name</label>
-                    <input type="text" id="name" name="name" required
+                    <label for="himg" class="block text-sm text-gray-300 mb-2">Product image</label>
+                    <input type="file" id="himg" name="himg" required
                         class="w-full px-4 py-3 rounded-lg bg-[#0B0D17] border border-gray-700 
                             focus:outline-none focus:ring-2 focus:ring-crypto-purple text-white"
-                        placeholder="John Doe">
+                        placeholder="Product image">
                 </div>
-
-                <!-- Email -->
+                <!-- product Name -->
                 <div>
-                    <label for="email" class="block text-sm text-gray-300 mb-2">Email Address</label>
-                    <input type="email" id="email" name="email" required
+                    <label for="hname" class="block text-sm text-gray-300 mb-2">Product Name</label>
+                    <input type="text" id="hname" name="hname" required
                         class="w-full px-4 py-3 rounded-lg bg-[#0B0D17] border border-gray-700 
                             focus:outline-none focus:ring-2 focus:ring-crypto-purple text-white"
-                        placeholder="you@example.com">
+                        placeholder="Product Name">
                 </div>
-
-                <!-- Subject -->
+                <!-- product decs -->
                 <div>
-                    <label for="subject" class="block text-sm text-gray-300 mb-2">Subject</label>
-                    <input type="text" id="subject" name="subject" required
+                    <label for="hdesc" class="block text-sm text-gray-300 mb-2">Product Description</label>
+                    <input type="text" id="hdesc" name="hdesc" required
                         class="w-full px-4 py-3 rounded-lg bg-[#0B0D17] border border-gray-700 
                             focus:outline-none focus:ring-2 focus:ring-crypto-purple text-white"
-                        placeholder="Enter subject">
+                        placeholder="Product Desc">
                 </div>
-
-                <!-- Message -->
+                <!-- price -->
                 <div>
-                    <label for="message" class="block text-sm text-gray-300 mb-2">Message</label>
-                    <textarea id="message" name="message" rows="5" required
+                    <label for="hprice" class="block text-sm text-gray-300 mb-2">Product price</label>
+                    <input type="text" id="hprice" name="hprice" required
                         class="w-full px-4 py-3 rounded-lg bg-[#0B0D17] border border-gray-700 
                             focus:outline-none focus:ring-2 focus:ring-crypto-purple text-white"
-                        placeholder="Write your message here..."></textarea>
+                        placeholder="Product price">
                 </div>
+
+
+
+
 
                 <!-- Submit -->
-                <button type="submit" name="csubmit"
+                <button type="submit" name="hsubmit"
                     class="w-full bg-crypto-purple hover:bg-crypto-dark-purple text-white py-3 
                         rounded-lg font-medium flex items-center justify-center">
-                    Send Message
+                    Add
                 </button>
             </form>
 
