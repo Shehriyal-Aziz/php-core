@@ -247,7 +247,7 @@ if (!$product) {
   // Show notification
   function showNotification(message) {
     const notification = document.createElement('div');
-    notification.className = 'fixed top-24 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-[9999] animate-fade-in';
+  notification.className = 'fixed bottom-8 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-[9999] animate-fade-in';
     notification.textContent = message;
     document.body.appendChild(notification);
     
