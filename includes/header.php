@@ -58,7 +58,7 @@
           <i data-lucide="shopping-bag"
             class="w-5 h-5 text-white hover:text-purple-500 transition-all duration-300"></i>
           <span
-            class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+            class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">0</span>
         </button>
 
         <!-- User Icon -->
@@ -88,100 +88,192 @@
       </div>
     </div>
   </nav>
-    <!-- 🛒 Cart Sidebar -->
-<div id="cartSidebar"
-  class="fixed top-0 right-0 w-80 sm:w-96 h-full bg-[#12141C] shadow-2xl border-l border-gray-800 transform translate-x-full transition-transform duration-300 z-[1000]">
-  <div class="p-4 border-b border-gray-700 flex justify-between items-center">
-    <h2 class="text-xl font-semibold text-white">Your Cart</h2>
-    <button onclick="closeCart()" class="text-gray-400 hover:text-white">✕</button>
+
+  <!-- 🛒 Cart Sidebar -->
+  <div id="cartSidebar"
+    class="fixed top-0 right-0 w-80 sm:w-96 h-full bg-[#12141C] shadow-2xl border-l border-gray-800 transform translate-x-full transition-transform duration-300 z-[1000]">
+    <div class="p-4 border-b border-gray-700 flex justify-between items-center">
+      <h2 class="text-xl font-semibold text-white">Your Cart</h2>
+      <button onclick="closeCart()" class="text-gray-400 hover:text-white text-2xl">✕</button>
+    </div>
+    <div id="cartItems" class="p-4 space-y-4 overflow-y-auto max-h-[calc(100vh-200px)]"></div>
+
+    <div class="p-4 border-t border-gray-700">
+      <a href="checkout.php"
+        class="block w-full text-center bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg font-semibold transition-colors">
+        Checkout
+      </a>
+    </div>
   </div>
-  <div id="cartItems" class="p-4 space-y-4 overflow-y-auto max-h-[75vh]"></div>
-  <div class="p-4 border-t border-gray-700">
-    <a href="checkout.php"
-      class="block w-full text-center bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg font-semibold">
-      Checkout
-    </a>
-  </div>
-</div>
-<script>
-  // redirect to single product page
-  function openProduct(id) {
-    window.location.href = `sproduct.php?id=${id}`;
-  }
 
-  // add to cart
-  function addToCart(button) {
-    const card = button.closest("[data-id]");
-    const product = {
-      id: card.dataset.id,
-      name: card.dataset.name,
-      price: card.dataset.price,
-      img: card.dataset.img
-    };
-
-    // send product data to PHP using fetch
-    fetch('add_to_cart.php', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams(product)
-    })
-      .then(res => res.text())
-      .then(html => {
-        document.getElementById("cartItems").innerHTML = html;
-        openCart();
-      });
-  }
-
-  function openCart() {
-    document.getElementById("cartSidebar").classList.remove("translate-x-full");
-  }
-
-  function closeCart() {
-    document.getElementById("cartSidebar").classList.add("translate-x-full");
-  }
-</script>
-
+  <!-- Initialize Lucide Icons -->
   <script>
-  lucide.createIcons();
+    lucide.createIcons();
+  </script>
 
-  const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-  const mobileMenu = document.getElementById('mobileMenu');
+  <!-- Cart Functionality -->
+  <script>
 
-  mobileMenu.style.transition = "all 0.3s ease";
-  mobileMenu.style.transformOrigin = "top";
 
-  let isOpen = false;
-
-  mobileMenuBtn.addEventListener('click', () => {
-    if (!isOpen) {
-      // open animation
-      mobileMenu.classList.remove('hidden');
-      mobileMenu.style.opacity = "0";
-      mobileMenu.style.transform = "scaleY(0)";
-      setTimeout(() => {
-        mobileMenu.style.opacity = "1";
-        mobileMenu.style.transform = "scaleY(1)";
-      }, 10);
-
-      // change icon to 'X'
-      mobileMenuBtn.innerHTML = `<i data-lucide="X" class="w-6 h-6"></i>`;
-      lucide.createIcons();
-    } else {
-      // close animation
-      mobileMenu.style.opacity = "0";
-      mobileMenu.style.transform = "scaleY(0)";
-      setTimeout(() => {
-        mobileMenu.classList.add('hidden');
-      }, 300);
-
-      // change icon back to menu
-      mobileMenuBtn.innerHTML = `<i data-lucide="menu" class="w-6 h-6"></i>`;
-      lucide.createIcons();
+    // Redirect to single product page
+    function openProduct(id) {
+      window.location.href = `sproduct.php?id=${id}`;
     }
 
-    isOpen = !isOpen;
-  });
-</script>
+    // Add to cart
+    function addToCart(button) {
+      const card = button.closest("[data-id]");
+      const product = {
+        id: card.dataset.id,
+        name: card.dataset.name,
+        price: card.dataset.price,
+        img: card.dataset.img
+      };
+
+      fetch('add_to_cart.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams(product)
+      })
+        .then(res => res.text())
+        .then(html => {
+          document.getElementById("cartItems").innerHTML = html;
+          updateCartBadge(html);
+          openCart();
+        })
+        .catch(err => console.error('Error adding to cart:', err));
+    }
+
+    // Update cart quantity
+    function updateCart(id, action) {
+      fetch('update_cart.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ id: id, action: action })
+      })
+        .then(res => res.text())
+        .then(html => {
+          document.getElementById("cartItems").innerHTML = html;
+          updateCartBadge(html);
+        })
+        .catch(err => console.error('Error updating cart:', err));
+    }
+
+    // Remove from cart
+    function removeFromCart(id) {
+      fetch('remove_cart.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ id: id })
+      })
+        .then(res => res.text())
+        .then(html => {
+          document.getElementById("cartItems").innerHTML = html;
+          updateCartBadge(html);
+        })
+        .catch(err => console.error('Error removing from cart:', err));
+    }
+
+    // Update cart badge count
+    function updateCartBadge(html) {
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = html;
+      const countSpan = tempDiv.querySelector('#cartCount');
+      
+      if (countSpan) {
+        const count = parseInt(countSpan.textContent) || 0;
+        const badge = document.querySelector('#cartBtn span');
+        if (badge) {
+          badge.textContent = count;
+          badge.style.display = count > 0 ? 'flex' : 'none';
+        }
+      }
+    }
+
+    // Open cart sidebar
+    function openCart() {
+      document.getElementById("cartSidebar").classList.remove("translate-x-full");
+    }
+
+    // Close cart sidebar
+    function closeCart() {
+      document.getElementById("cartSidebar").classList.add("translate-x-full");
+    }
+
+    // Load cart on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      // Load cart items
+      fetch('load_cart.php')
+        .then(res => res.text())
+        .then(html => {
+          document.getElementById("cartItems").innerHTML = html;
+          updateCartBadge(html);
+        })
+        .catch(err => {
+          console.error('Error loading cart:', err);
+          document.getElementById("cartItems").innerHTML = 
+            "<div class='text-center text-gray-400 py-8'>Your cart is empty</div>";
+        });
+
+      // Open cart when cart button clicked
+      document.getElementById('cartBtn').addEventListener('click', () => {
+  // Fetch latest cart data each time user clicks cart icon
+  fetch('load_cart.php')
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById("cartItems").innerHTML = html;
+      updateCartBadge(html); // 🔄 ensure badge is synced
+      openCart(); // then open the sidebar
+    })
+    .catch(err => console.error('Error loading cart:', err));
+});
+
+
+      // Initialize Lucide icons
+      lucide.createIcons();
+    });
+  </script>
+
+  <!-- Mobile Menu Toggle -->
+  <script>
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+
+    mobileMenu.style.transition = "all 0.3s ease";
+    mobileMenu.style.transformOrigin = "top";
+
+    let isOpen = false;
+
+    mobileMenuBtn.addEventListener('click', () => {
+      if (!isOpen) {
+        // Open animation
+        mobileMenu.classList.remove('hidden');
+        mobileMenu.style.opacity = "0";
+        mobileMenu.style.transform = "scaleY(0)";
+        setTimeout(() => {
+          mobileMenu.style.opacity = "1";
+          mobileMenu.style.transform = "scaleY(1)";
+        }, 10);
+
+        // Change icon to 'X'
+        mobileMenuBtn.innerHTML = `<i data-lucide="x" class="w-6 h-6"></i>`;
+        lucide.createIcons();
+      } else {
+        // Close animation
+        mobileMenu.style.opacity = "0";
+        mobileMenu.style.transform = "scaleY(0)";
+        setTimeout(() => {
+          mobileMenu.classList.add('hidden');
+        }, 300);
+
+        // Change icon back to menu
+        mobileMenuBtn.innerHTML = `<i data-lucide="menu" class="w-6 h-6"></i>`;
+        lucide.createIcons();
+      }
+
+      isOpen = !isOpen;
+    });
+  </script>
 
 </body>
 </html>

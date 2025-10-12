@@ -1,32 +1,20 @@
 <?php
 session_start();
 
-$id = $_POST['id'];
-$action = $_POST['action'];
 
-if (isset($_SESSION['cart'][$id])) {
-  if ($action === 'inc') {
-    $_SESSION['cart'][$id]['quantity']++;
-  } elseif ($action === 'dec') {
-    $_SESSION['cart'][$id]['quantity']--;
-    
-    // Remove item if quantity reaches 0
-    if ($_SESSION['cart'][$id]['quantity'] <= 0) {
-      unset($_SESSION['cart'][$id]);
-    }
-  }
+if (!isset($_SESSION['cart']) || empty($_SESSION['cart'])) {
+  echo "<div class='text-center text-gray-400 py-8'>Your cart is empty</div>";
+  echo "<span id='cartCount' style='display:none;'>0</span>";
+  exit;
 }
 
-// Calculate total
 $total = 0;
 $itemCount = 0;
+
 foreach ($_SESSION['cart'] as $item) {
   $total += $item['price'] * $item['quantity'];
   $itemCount += $item['quantity'];
-}
-
-// Show updated cart items
-foreach ($_SESSION['cart'] as $item) {
+  
   echo "
     <div class='flex items-start space-x-3 border-b border-gray-800 pb-4'>
       <img src='{$item['img']}' class='w-16 h-16 rounded-lg object-cover'>
@@ -59,7 +47,6 @@ foreach ($_SESSION['cart'] as $item) {
   ";
 }
 
-// Show total
 echo "
   <div class='mt-4 pt-4 border-t border-gray-700'>
     <div class='flex justify-between items-center'>
@@ -69,5 +56,4 @@ echo "
   </div>
 ";
 
-// Return item count for badge update
 echo "<span id='cartCount' style='display:none;'>$itemCount</span>";
