@@ -88,6 +88,58 @@
       </div>
     </div>
   </nav>
+    <!-- 🛒 Cart Sidebar -->
+<div id="cartSidebar"
+  class="fixed top-0 right-0 w-80 sm:w-96 h-full bg-[#12141C] shadow-2xl border-l border-gray-800 transform translate-x-full transition-transform duration-300 z-[1000]">
+  <div class="p-4 border-b border-gray-700 flex justify-between items-center">
+    <h2 class="text-xl font-semibold text-white">Your Cart</h2>
+    <button onclick="closeCart()" class="text-gray-400 hover:text-white">✕</button>
+  </div>
+  <div id="cartItems" class="p-4 space-y-4 overflow-y-auto max-h-[75vh]"></div>
+  <div class="p-4 border-t border-gray-700">
+    <a href="checkout.php"
+      class="block w-full text-center bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg font-semibold">
+      Checkout
+    </a>
+  </div>
+</div>
+<script>
+  // redirect to single product page
+  function openProduct(id) {
+    window.location.href = `sproduct.php?id=${id}`;
+  }
+
+  // add to cart
+  function addToCart(button) {
+    const card = button.closest("[data-id]");
+    const product = {
+      id: card.dataset.id,
+      name: card.dataset.name,
+      price: card.dataset.price,
+      img: card.dataset.img
+    };
+
+    // send product data to PHP using fetch
+    fetch('add_to_cart.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams(product)
+    })
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById("cartItems").innerHTML = html;
+        openCart();
+      });
+  }
+
+  function openCart() {
+    document.getElementById("cartSidebar").classList.remove("translate-x-full");
+  }
+
+  function closeCart() {
+    document.getElementById("cartSidebar").classList.add("translate-x-full");
+  }
+</script>
 
   <script>
   lucide.createIcons();
