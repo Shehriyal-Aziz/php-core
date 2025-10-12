@@ -8,7 +8,9 @@ $img = $_POST['img'];
 
 if (empty($id) || empty($name) || empty($price) || empty($img)) {
   http_response_code(400);
-  exit('Invalid product data');
+  header('Content-Type: application/json');
+  echo json_encode(['success' => false, 'error' => 'Invalid product data']);
+  exit();
 }
 
 if (!isset($_SESSION['cart'])) {
@@ -27,15 +29,20 @@ if (isset($_SESSION['cart'][$id])) {
   ];
 }
 
-// Calculate total
+// Calculate total items and price
+$totalItems = 0;
 $total = 0;
 foreach ($_SESSION['cart'] as $item) {
+  $totalItems += $item['quantity'];
   $total += $item['price'] * $item['quantity'];
 }
 
+// Build cart HTML
+$cartHTML = '';
+
 // Show updated cart items
 foreach ($_SESSION['cart'] as $item) {
-  echo "
+  $cartHTML .= "
     <div class='flex items-start space-x-3 border-b border-gray-800 pb-4'>
       <img src='{$item['img']}' class='w-16 h-16 rounded-lg object-cover'>
       <div class='flex-1'>
@@ -68,7 +75,7 @@ foreach ($_SESSION['cart'] as $item) {
 }
 
 // Show total
-echo "
+$cartHTML .= "
   <div class='mt-4 pt-4 border-t border-gray-700'>
     <div class='flex justify-between items-center'>
       <span class='text-gray-400 font-semibold'>Total:</span>
@@ -77,3 +84,10 @@ echo "
   </div>
 ";
 
+// Return JSON response
+header('Content-Type: application/json');
+echo json_encode([
+  'success' => true,
+  'cartHTML' => $cartHTML,
+  'cartCount' => $totalItems
+]);

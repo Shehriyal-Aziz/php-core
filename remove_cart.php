@@ -7,20 +7,23 @@ if (isset($_SESSION['cart'][$id])) {
   unset($_SESSION['cart'][$id]);
 }
 
-// Calculate total
+// Calculate total items and price
+$totalItems = 0;
 $total = 0;
-$itemCount = 0;
 foreach ($_SESSION['cart'] as $item) {
+  $totalItems += $item['quantity'];
   $total += $item['price'] * $item['quantity'];
-  $itemCount += $item['quantity'];
 }
+
+// Build cart HTML
+$cartHTML = '';
 
 // Show updated cart items
 if (empty($_SESSION['cart'])) {
-  echo "<div class='text-center text-gray-400 py-8'>Your cart is empty</div>";
+  $cartHTML = "<div class='text-center text-gray-400 py-8'>Your cart is empty</div>";
 } else {
   foreach ($_SESSION['cart'] as $item) {
-    echo "
+    $cartHTML .= "
       <div class='flex items-start space-x-3 border-b border-gray-800 pb-4'>
         <img src='{$item['img']}' class='w-16 h-16 rounded-lg object-cover'>
         <div class='flex-1'>
@@ -53,7 +56,7 @@ if (empty($_SESSION['cart'])) {
   }
   
   // Show total
-  echo "
+  $cartHTML .= "
     <div class='mt-4 pt-4 border-t border-gray-700'>
       <div class='flex justify-between items-center'>
         <span class='text-gray-400 font-semibold'>Total:</span>
@@ -63,5 +66,10 @@ if (empty($_SESSION['cart'])) {
   ";
 }
 
-// Return item count for badge update
-echo "<span id='cartCount' style='display:none;'>$itemCount</span>";
+// Return JSON response
+header('Content-Type: application/json');
+echo json_encode([
+  'success' => true,
+  'cartHTML' => $cartHTML,
+  'cartCount' => $totalItems
+]);

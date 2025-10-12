@@ -57,8 +57,18 @@
         <button id="cartBtn" class="p-2 rounded-lg group relative">
           <i data-lucide="shopping-bag"
             class="w-5 h-5 text-white hover:text-purple-500 transition-all duration-300"></i>
-          <span
-            class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">0</span>
+          <span id="cartCount"
+            class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+            <?php 
+              $count = 0;
+              if (isset($_SESSION['cart'])) {
+                foreach ($_SESSION['cart'] as $item) {
+                  $count += $item['quantity'];
+                }
+              }
+              echo $count;
+            ?>
+          </span>
         </button>
 
         <!-- User Icon -->
@@ -113,8 +123,6 @@
 
   <!-- Cart Functionality -->
   <script>
-
-
     // Redirect to single product page
     function openProduct(id) {
       window.location.href = `sproduct.php?id=${id}`;
@@ -135,11 +143,21 @@
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams(product)
       })
-        .then(res => res.text())
-        .then(html => {
-          document.getElementById("cartItems").innerHTML = html;
-          updateCartBadge(html);
-          openCart();
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            // Update cart items
+            document.getElementById("cartItems").innerHTML = data.cartHTML;
+            
+            // Update cart count badge
+            const badge = document.getElementById('cartCount');
+            if (badge) {
+              badge.textContent = data.cartCount;
+              badge.style.display = data.cartCount > 0 ? 'flex' : 'none';
+            }
+            
+            openCart();
+          }
         })
         .catch(err => console.error('Error adding to cart:', err));
     }
@@ -151,10 +169,17 @@
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({ id: id, action: action })
       })
-        .then(res => res.text())
-        .then(html => {
-          document.getElementById("cartItems").innerHTML = html;
-          updateCartBadge(html);
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            document.getElementById("cartItems").innerHTML = data.cartHTML;
+            
+            const badge = document.getElementById('cartCount');
+            if (badge) {
+              badge.textContent = data.cartCount;
+              badge.style.display = data.cartCount > 0 ? 'flex' : 'none';
+            }
+          }
         })
         .catch(err => console.error('Error updating cart:', err));
     }
@@ -166,28 +191,19 @@
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({ id: id })
       })
-        .then(res => res.text())
-        .then(html => {
-          document.getElementById("cartItems").innerHTML = html;
-          updateCartBadge(html);
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            document.getElementById("cartItems").innerHTML = data.cartHTML;
+            
+            const badge = document.getElementById('cartCount');
+            if (badge) {
+              badge.textContent = data.cartCount;
+              badge.style.display = data.cartCount > 0 ? 'flex' : 'none';
+            }
+          }
         })
         .catch(err => console.error('Error removing from cart:', err));
-    }
-
-    // Update cart badge count
-    function updateCartBadge(html) {
-      const tempDiv = document.createElement('div');
-      tempDiv.innerHTML = html;
-      const countSpan = tempDiv.querySelector('#cartCount');
-      
-      if (countSpan) {
-        const count = parseInt(countSpan.textContent) || 0;
-        const badge = document.querySelector('#cartBtn span');
-        if (badge) {
-          badge.textContent = count;
-          badge.style.display = count > 0 ? 'flex' : 'none';
-        }
-      }
     }
 
     // Open cart sidebar
@@ -204,10 +220,17 @@
     document.addEventListener('DOMContentLoaded', function() {
       // Load cart items
       fetch('load_cart.php')
-        .then(res => res.text())
-        .then(html => {
-          document.getElementById("cartItems").innerHTML = html;
-          updateCartBadge(html);
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            document.getElementById("cartItems").innerHTML = data.cartHTML;
+            
+            const badge = document.getElementById('cartCount');
+            if (badge) {
+              badge.textContent = data.cartCount;
+              badge.style.display = data.cartCount > 0 ? 'flex' : 'none';
+            }
+          }
         })
         .catch(err => {
           console.error('Error loading cart:', err);
@@ -217,17 +240,23 @@
 
       // Open cart when cart button clicked
       document.getElementById('cartBtn').addEventListener('click', () => {
-  // Fetch latest cart data each time user clicks cart icon
-  fetch('load_cart.php')
-    .then(res => res.text())
-    .then(html => {
-      document.getElementById("cartItems").innerHTML = html;
-      updateCartBadge(html); // 🔄 ensure badge is synced
-      openCart(); // then open the sidebar
-    })
-    .catch(err => console.error('Error loading cart:', err));
-});
-
+        fetch('load_cart.php')
+          .then(res => res.json())
+          .then(data => {
+            if (data.success) {
+              document.getElementById("cartItems").innerHTML = data.cartHTML;
+              
+              const badge = document.getElementById('cartCount');
+              if (badge) {
+                badge.textContent = data.cartCount;
+                badge.style.display = data.cartCount > 0 ? 'flex' : 'none';
+              }
+              
+              openCart();
+            }
+          })
+          .catch(err => console.error('Error loading cart:', err));
+      });
 
       // Initialize Lucide icons
       lucide.createIcons();
